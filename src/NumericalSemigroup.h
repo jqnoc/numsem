@@ -17,16 +17,15 @@ class NumericalSemigroup
 {
 private:
 
-	std::set<int> generators;	//!< System of generators of the semigroup (default: NULL)
+	std::set<int> generators;	//!< System of generators of the numerical semigroup (default: NULL)
+	bool isNumSem;	//!< True if 'generators' is a valid system of generators (i.e., if gcd(a_1,...,a_n) = 1)
 
 public:
 
-    //! @brief constructor
+    //! @brief Constructor
     NumericalSemigroup(std::set<int> generators);
 
-	//! @brief  Empty constructor
-    NumericalSemigroup();
-	//! @brief  Empty destructor
+	//! @brief Empty destructor
 	~NumericalSemigroup();
 
 	//! @brief  Adds a generator to the system of generators of the current numerical semigroup
@@ -34,9 +33,15 @@ public:
     //! @return True if the element was already inside the semigroup
 	bool addGenerator(int generator);
 
+	int gcd(int a, int b);
+
     int getNumberOfGenerators();
 
-	void printSemigroup();
+	bool isNumericalSemigroup();
+
+	void printGenerators();
+
+	void printNumericalSemigroup();
 
 };
 

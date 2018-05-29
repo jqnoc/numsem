@@ -16,21 +16,24 @@ int main ( int argc, char *argv[] )
 
 	if (argc > 1) {
 		std::cout << "Error: Too many arguments." << std::endl;
+		return -1;
 	}
 
-	std::cout << "NumericalSemigroup::NumericalSemigroup()" << std::endl;
-	NumericalSemigroup* ns = new NumericalSemigroup();
 
 	std::cout << "### Add generators to the semigroup (type 0 for no more generators)" << std::endl;
 	int newGenerator = 1;
+	std::set<int> generators;
 	while (newGenerator != 0){
-		std::cout << "Generator " << ns->getNumberOfGenerators() + 1 << ":";
+		std::cout << "Generator " << generators.size() + 1 << ": ";
 		std::cin >> newGenerator;
 		std::cout << std::endl;
-		ns->addGenerator(newGenerator);
+		if (newGenerator != 0){
+			generators.insert(newGenerator);
+		}
 	}
 
-	std::cout << "Total number of generators: " << ns->getNumberOfGenerators() << std::endl;
+	std::cout << "NumericalSemigroup::NumericalSemigroup(std::set<int> generators)" << std::endl;
+	NumericalSemigroup* ns = new NumericalSemigroup(generators);
 
 	return 1;
 }
