@@ -19,20 +19,21 @@ int main ( int argc, char *argv[] )
 		return -1;
 	}
 
-
-	std::cout << "### Add generators to the semigroup (type 0 for no more generators)" << std::endl;
+	std::cout << "### Add generators to the semigroup (type -1 for no more generators)" << std::endl;
 	int newGenerator = 1;
 	std::set<int> generators;
 	while (newGenerator != 0){
 		std::cout << "Generator " << generators.size() + 1 << ": ";
 		std::cin >> newGenerator;
 		std::cout << std::endl;
-		if (newGenerator != 0){
+		if (newGenerator > 1){
 			generators.insert(newGenerator);
+		} else if (newGenerator == 0 || newGenerator == 1) {
+
 		}
 	}
 
-	std::cout << "NumericalSemigroup::NumericalSemigroup(std::set<int> generators)" << std::endl;
+	//std::cout << "NumericalSemigroup::NumericalSemigroup(std::set<int> generators)" << std::endl;
 	NumericalSemigroup* ns = new NumericalSemigroup(generators);
 
 	return 1;
