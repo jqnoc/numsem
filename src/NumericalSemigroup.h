@@ -42,6 +42,8 @@ public:
 
 	bool is_numerical_semigroup();
 
+	std::vector<int> next_lambda(std::vector<int> lambda, std::vector<int> bounds);
+
 	void print_generators();
 
 	void print_numerical_semigroup();

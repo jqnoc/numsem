@@ -79,6 +79,20 @@ bool NumericalSemigroup::is_numerical_semigroup(){
     return this->is_num_sem;
 }
 
+std::vector<int> NumericalSemigroup::next_lambda(std::vector<int> lambda, std::vector<int> bounds){
+    int lambda_index = 0;
+    bool finished = false;
+    while (lambda_index < lambda.size()){
+        if (lambda[lambda_index] < bounds[lambda_index]){
+            lambda[lambda_index] += 1;
+            return lambda;
+        }
+        lambda[lambda_index] = 0;
+        ++lambda_index;
+    }
+    return std::vector<int>();
+}
+
 void NumericalSemigroup::print_generators(){
     std::set<int>::iterator it = this->generators.begin();
     std::cout << *it;
