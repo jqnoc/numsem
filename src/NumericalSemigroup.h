@@ -46,6 +46,8 @@ public:
 
 	void print_generators();
 
+	void print_ikp_solution(std::vector<int> lambda);
+
 	void print_numerical_semigroup();
 
 	int sylvester_denumerant(int t);

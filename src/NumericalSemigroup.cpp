@@ -103,6 +103,24 @@ void NumericalSemigroup::print_generators(){
     }
 }
 
+void NumericalSemigroup::print_ikp_solution(std::vector<int> lambda){
+    if (lambda.size() != this->generators.size()){
+        std::cout << "Error: Lambda size different to number of generators" << std::endl;
+        exit(0);
+    } else {
+        int lambda_index = 0;
+        std::set<int>::iterator generators_iterator = this->generators.begin();
+        std::cout << lambda[lambda_index] << " * (" << *generators_iterator << ")";
+        ++generators_iterator;
+        ++lambda_index;
+        while (generators_iterator != this->generators.end()){
+            std::cout << " + " << lambda[lambda_index] << " * (" << *generators_iterator << ")";
+            ++generators_iterator;
+            ++lambda_index;
+        }
+    }
+}
+
 void NumericalSemigroup::print_numerical_semigroup(){
     std::cout << "S = <";
     this->print_generators();
@@ -118,23 +136,38 @@ int NumericalSemigroup::sylvester_denumerant(int t){
     int denumerant = 0;
 
     /* calculate bounds for lambda solution */
-    std::vector<int> b;
-    std::set<int>::iterator it = this->generators.begin();
+    std::vector<int> bounds;
+    std::set<int>::iterator generators_iterator = this->generators.begin();
     std::cout << "Bounds = (";
-    int b_i = t / *it;
-    b.push_back(b_i);
+    int b_i = t / *generators_iterator;
+    bounds.push_back(b_i);
     std::cout << b_i;
-    ++it;
-    while (it != this->generators.end()){
-        b_i = t / *it;
-        b.push_back(b_i);
+    ++generators_iterator;
+    while (generators_iterator != this->generators.end()){
+        b_i = t / *generators_iterator;
+        bounds.push_back(b_i);
         std::cout << ", " << b_i;
-        ++it;
+        ++generators_iterator;
     }
     std::cout << ")" << std::endl;
 
     /* calculate sylvester denumerant */
     std::vector<int> lambda (this->generators.size(),0);
+
+    while (!lambda.empty()){
+
+        /* check if this lambda is a solution */
+        if (ikp_solution(lambda)){
+
+            /* update denumerant */
+            ++denumerant;
+            /* print solution */
+
+        }
+
+        /* calculate next lambda */
+        lambda = next_lambda(lambda, bounds);
+    }
 
     return denumerant;
 }
