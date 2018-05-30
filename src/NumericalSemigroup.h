@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <set>
+#include <vector>
 
 class NumericalSemigroup
 {
@@ -33,6 +34,8 @@ public:
     //! @return True if the element was already inside the semigroup
 	bool addGenerator(int generator);
 
+	bool checkSolutionIKP(int t, std::vector<int> lambda);
+
 	int gcd(int a, int b);
 
     int getNumberOfGenerators();
@@ -42,6 +45,8 @@ public:
 	void printGenerators();
 
 	void printNumericalSemigroup();
+
+	int sylvesterDenumerant(int t);
 
 };
 

@@ -43,6 +43,16 @@ bool NumericalSemigroup::addGenerator(int generator){
     return ret.second;
 }
 
+bool NumericalSemigroup::checkSolutionIKP(int t, std::vector<int> lambda){
+    bool isSolutionIKP = false;
+    int value = 0;
+    if (lambda.size() != this->generators.size()){
+
+    } else {
+        
+    }
+}
+
 int NumericalSemigroup::gcd (int a, int b)
 {
     int c;
@@ -76,4 +86,33 @@ void NumericalSemigroup::printNumericalSemigroup(){
     std::cout << "S = <";
     this->printGenerators();
     std::cout << ">";
+}
+
+int NumericalSemigroup::sylvesterDenumerant(int t){
+
+    /* init */
+    std::cout << std::endl << "  - Calculating Sylvester denumerant d(" << t << "; ";
+    this->printGenerators();
+    std::cout << ") -" << std::endl << std::endl;
+    int denumerant = 0;
+
+    /* calculate bounds for lambda solution */
+    std::vector<int> b;
+    std::set<int>::iterator it = this->generators.begin();
+    std::cout << "Bounds = (";
+    int b_i = t / *it;
+    b.push_back(b_i);
+    std::cout << b_i;
+    ++it;
+    while (it != this->generators.end()){
+        b_i = t / *it;
+        b.push_back(b_i);
+        std::cout << ", " << b_i;
+        ++it;
+    }
+    std::cout << ")" << std::endl;
+
+    std::vector<int> lambda (this->generators.size(),0);
+
+    return denumerant;
 }
