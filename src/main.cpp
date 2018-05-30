@@ -40,7 +40,7 @@ int main ( int argc, char *argv[] )
 	std::cout << "Introduce an integer for the Sylvester denumerant: ";
 	int t;
 	std::cin >> t;
-	ns->sylvesterDenumerant(t);
+	ns->sylvester_denumerant(t);
 	std::cout << std::endl;
 
 	return 1;

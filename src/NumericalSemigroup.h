@@ -19,7 +19,7 @@ class NumericalSemigroup
 private:
 
 	std::set<int> generators;	//!< System of generators of the numerical semigroup (default: NULL)
-	bool isNumSem;	//!< True if 'generators' is a valid system of generators (i.e., if gcd(a_1,...,a_n) = 1)
+	bool is_num_sem;			//!< True if 'generators' is a valid system of generators (i.e., if gcd(a_1,...,a_n) = 1)
 
 public:
 
@@ -32,21 +32,21 @@ public:
 	//! @brief  Adds a generator to the system of generators of the current numerical semigroup
 	//! @param	generator  New generator
     //! @return True if the element was already inside the semigroup
-	bool addGenerator(int generator);
-
-	bool checkSolutionIKP(int t, std::vector<int> lambda);
+	bool add_generator(int generator);
 
 	int gcd(int a, int b);
 
-    int getNumberOfGenerators();
+    int get_number_generators();
 
-	bool isNumericalSemigroup();
+	int ikp_solution(std::vector<int> lambda);
 
-	void printGenerators();
+	bool is_numerical_semigroup();
 
-	void printNumericalSemigroup();
+	void print_generators();
 
-	int sylvesterDenumerant(int t);
+	void print_numerical_semigroup();
+
+	int sylvester_denumerant(int t);
 
 };
 
