@@ -136,9 +136,38 @@ int NumericalSemigroup::sylvester_denumerant(int t){
     int denumerant = 0;
 
     /* calculate bounds for lambda solution */
+    std::vector<int> bounds = this->sylvester_denumerant_bounds(t);
+
+    /* calculate sylvester denumerant */
+    std::vector<int> lambda (this->generators.size(),0);
+
+    while (!lambda.empty()){
+
+        /* check if this lambda is a solution */
+        if (t == ikp_solution(lambda)){
+
+            /* update denumerant */
+            ++denumerant;
+            /* print solution */
+            std::cout << "Solution " << denumerant << ":" << std::endl;
+            this->print_ikp_solution(lambda);
+            std::cout << std::endl;
+        }
+
+        /* calculate next lambda */
+        lambda = next_lambda(lambda, bounds);
+    }
+
+    std::cout << std::endl << "d(" << t << "; ";
+    this->print_generators();
+    std::cout << ") = " << denumerant << std::endl << std::endl;
+    return denumerant;
+}
+
+std::vector<int> NumericalSemigroup::sylvester_denumerant_bounds(int t){
     std::vector<int> bounds;
     std::set<int>::iterator generators_iterator = this->generators.begin();
-    std::cout << "Bounds = (";
+    std::cout << "Bounds for t = " << t << ": (";
     int b_i = t / *generators_iterator;
     bounds.push_back(b_i);
     std::cout << b_i;
@@ -149,25 +178,6 @@ int NumericalSemigroup::sylvester_denumerant(int t){
         std::cout << ", " << b_i;
         ++generators_iterator;
     }
-    std::cout << ")" << std::endl;
-
-    /* calculate sylvester denumerant */
-    std::vector<int> lambda (this->generators.size(),0);
-
-    while (!lambda.empty()){
-
-        /* check if this lambda is a solution */
-        if (ikp_solution(lambda)){
-
-            /* update denumerant */
-            ++denumerant;
-            /* print solution */
-
-        }
-
-        /* calculate next lambda */
-        lambda = next_lambda(lambda, bounds);
-    }
-
-    return denumerant;
+    std::cout << ")" << std::endl << std::endl;
+    return bounds;
 }

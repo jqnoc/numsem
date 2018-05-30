@@ -52,6 +52,8 @@ public:
 
 	int sylvester_denumerant(int t);
 
+	std::vector<int> sylvester_denumerant_bounds(int t);
+
 };
 
 #endif
