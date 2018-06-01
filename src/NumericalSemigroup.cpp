@@ -145,7 +145,7 @@ void NumericalSemigroup::print_numerical_semigroup(){
     std::cout << ">";
 }
 
-int NumericalSemigroup::sylvester_denumerant(int t){
+int NumericalSemigroup::sylvester_denumerant(int t, bool with_solutions){
 
     /* init */
     std::cout << std::endl << "  - Calculating Sylvester denumerant d(" << t << "; ";
@@ -167,9 +167,9 @@ int NumericalSemigroup::sylvester_denumerant(int t){
             /* update denumerant */
             ++denumerant;
             /* print solution */
-            std::cout << "Solution " << denumerant << ":" << std::endl;
-            this->print_ikp_solution(lambda);
-            std::cout << std::endl;
+            if (with_solutions) std::cout << "Solution " << denumerant << ":" << std::endl;
+            if (with_solutions) this->print_ikp_solution(lambda);
+            if (with_solutions) std::cout << std::endl;
         }
 
         /* calculate next lambda */

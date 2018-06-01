@@ -63,7 +63,7 @@ public:
 	void print_numerical_semigroup();
 
 	//! @return The Sylvester denumerant of the integer $t$ with respect to the system of generators of the present numerical semigroup
-	int sylvester_denumerant(int t);
+	int sylvester_denumerant(int t, bool with_solutions);
 
 	//! @return The upper bounds for the ikp solutions of $t$ with respect to $a_1,...,a_n$
 	std::vector<int> sylvester_denumerant_bounds(int t);

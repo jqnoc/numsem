@@ -10,14 +10,15 @@
 #ifndef NUM_SEM_TESTS_H
 #define NUM_SEM_TESTS_H
 
+#include <fstream>
+#include <sstream>
+
 #include "NumericalSemigroup.h"
 
 class NumSemTests
 {
 private:
-
-	NumericalSemigroup* ns;
-
+    NumericalSemigroup* ns;
 public:
 
     //! @brief Constructor
@@ -26,7 +27,11 @@ public:
 	//! @brief Empty destructor
 	~NumSemTests();
 
-    void Test1();
+    void test_1();
+
+    NumericalSemigroup* initialize_numerical_semigroup_input();
+
+    int calculate_sylvester_denumerant();
 
 };
 

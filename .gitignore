@@ -33,5 +33,5 @@
 numsem
 
 # Other
-result.txt
-apery_tmp.run
+*.txt
+*.run

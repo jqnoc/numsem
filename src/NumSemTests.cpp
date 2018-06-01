@@ -9,32 +9,61 @@
 #include "NumSemTests.h"
 
 NumSemTests::NumSemTests(){
-    this->Test1();
+    this->sylvester_polynomial_graph();
 }
 
-void NumSemTests::Test1(){
+NumericalSemigroup* NumSemTests::initialize_numerical_semigroup_input(){
 
-	std::cout << "### Add generators to the semigroup (type -1 for no more generators)" << std::endl;
-	int newGenerator = 1;
-	std::set<int> generators;
-	while (newGenerator >= 0){
-		std::cout << "Generator " << generators.size() + 1 << ": ";
-		std::cin >> newGenerator;
-		std::cout << std::endl;
-		if (newGenerator > 1){
-			generators.insert(newGenerator);
-		} else if (newGenerator == 0 || newGenerator == 1) {
-			std::cout << "Generators must be different to 0 and 1 - Try again" << std::endl;
-		}
-	}
+    std::cout << "### Add generators to the semigroup (type -1 for no more generators)" << std::endl;
+    int newGenerator = 1;
+    std::set<int> generators;
+    while (newGenerator >= 0){
+    	std::cout << "Generator " << generators.size() + 1 << ": ";
+    	std::cin >> newGenerator;
+    	std::cout << std::endl;
+    	if (newGenerator > 1){
+    		generators.insert(newGenerator);
+    	} else if (newGenerator == 0 || newGenerator == 1) {
+    		std::cout << "Generators must be different to 0 and 1 - Try again" << std::endl;
+    	}
+    }
 
-	//std::cout << "NumericalSemigroup::NumericalSemigroup(std::set<int> generators)" << std::endl;
+    //std::cout << "NumericalSemigroup::NumericalSemigroup(std::set<int> generators)" << std::endl;
 	NumericalSemigroup* ns = new NumericalSemigroup(generators);
+    return ns;
+}
 
-	/* calculate denumerant for t = */
-	std::cout << "Introduce an integer for the Sylvester denumerant: ";
-	int t;
-	std::cin >> t;
-	ns->sylvester_denumerant(t);
-	std::cout << std::endl;
+int NumSemTests::calculate_sylvester_denumerant(){
+    /* calculate denumerant for t = */
+    std::cout << "Introduce an integer for the Sylvester denumerant: ";
+    int t;
+    std::cin >> t;
+    int den = this->ns->sylvester_denumerant(t, true);
+    std::cout << std::endl;
+    return den;
+}
+
+void NumSemTests::sylvester_polynomial_graph(){
+
+    std::ofstream ofs;
+    ofs.open ("sylvester_denumerant.txt", std::ofstream::out | std::ofstream::trunc);
+    std::stringstream ss1;
+    std::stringstream ss2;
+    ss1 << "[";
+    ss2 << "[";
+
+    this->ns = this->initialize_numerical_semigroup_input();
+
+    int upper_bound;
+    std::cout << "Upper bound for the Sylvester denumerant: ";
+    std::cin >> upper_bound;
+    std::cout << std::endl;
+
+    for (int i = 0; i < upper_bound; ++i){
+        ss1 << i << ", ";
+        ss2 << this->ns->sylvester_denumerant(i, false) << ", ";
+    }
+    ofs << ss1.str() << "]" << std::endl << ss2.str() << "]"  << std::endl;
+    ofs.close();
+
 }
