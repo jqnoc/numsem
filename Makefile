@@ -1,4 +1,4 @@
-SRCS := main.cpp NumericalSemigroup.cpp
+SRCS := main.cpp NumericalSemigroup.cpp NumSemTests.cpp
 SRCDIR := src
 BUILD := build
 BIN := bin
