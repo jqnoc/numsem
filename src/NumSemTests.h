@@ -32,11 +32,13 @@ public:
 
     NumericalSemigroup* initialize_numerical_semigroup_input();
 
+    void numsem_init();
+
+    void numsem_gaps();
+
     void numsem_membership();
 
     void numsem_sylvester_denumerant();
-
-    void numsem_init();
 
     void print_numsem_options();
 

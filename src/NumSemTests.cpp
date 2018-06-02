@@ -10,6 +10,7 @@
 
 NumSemTests::NumSemTests(){
     //this->sylvester_polynomial_graph();
+    this->number_of_options = 5;
     this->numsem_init();
 }
 
@@ -46,7 +47,6 @@ NumericalSemigroup* NumSemTests::initialize_numerical_semigroup_input() {
 
 void NumSemTests::numsem_init() {
     this->ns = this->initialize_numerical_semigroup_input();
-    this->number_of_options = 4;
     this->print_numsem_options();
     int option;
     std::cin >> option;
@@ -71,7 +71,25 @@ void NumSemTests::numsem_init() {
             this->print_numsem_options();
             std::cin >> option;
             std::cout << std::endl;
+        } else if (option == this->number_of_options - 4) {
+            this->numsem_gaps();
+            this->print_numsem_options();
+            std::cin >> option;
+            std::cout << std::endl;
         }
+    }
+}
+
+void NumSemTests::numsem_gaps() {
+    std::vector<int> set_gaps = this->ns->gaps();
+    if (set_gaps.size() = 0) {
+        std::cout << "G(S) = Ø" << std::endl;
+    } else {
+        std::cout << "G(S) = {" << set_gaps[0];
+        for (int i = 1; i < set_gaps.size(); ++i) {
+            std::cout << ", " << set_gaps[i];
+        }
+        std::cout << "}" << std::endl;
     }
 }
 
@@ -100,7 +118,9 @@ void NumSemTests::numsem_sylvester_denumerant() {
 }
 
 void NumSemTests::print_numsem_options() {
+    this->ns->print_numerical_semigroup();
     std::cout << "Select an option:" << std::endl;
+    std::cout << "\t" << this->number_of_options-4 << ". Calculate the set of gaps of S." << std::endl;
     std::cout << "\t" << this->number_of_options-3 << ". Solve the membership problem for S and t." << std::endl;
     std::cout << "\t" << this->number_of_options-2 << ". Calculate the Sylvester denumerant d(t;S)." << std::endl;
     std::cout << "\t" << this->number_of_options-1 << ". Define a new numerical semigroup." << std::endl;
