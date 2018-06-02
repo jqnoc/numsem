@@ -73,45 +73,43 @@ int NumericalSemigroup::get_number_generators() {
     return this->generators.size();
 }
 
-std::vector<int> NumericalSemigroup::ikp_bounds(int t){
+std::vector<int> NumericalSemigroup::ikp_bounds(int t, std::vector<int> new_generators) {
 
     /* initialize bounds */
     std::vector<int> bounds;
 
     /* calculate and print bounds as b_i = \floor (t / a_i) */
     /* first bound */
-    std::set<int>::iterator generators_iterator = this->generators.begin();
+    int generators_index = 0;
     std::cout << "Bounds for t = " << t << ": (";
-    int b_i = t / *generators_iterator;
+    int b_i = t / new_generators[generators_index];
     bounds.push_back(b_i);
     std::cout << b_i;
-    ++generators_iterator;
+    ++generators_index;
 
     /* rest of bounds */
-    while (generators_iterator != this->generators.end()) {
-        b_i = t / *generators_iterator;
+    while (generators_index < new_generators.size()) {
+        b_i = t / new_generators[generators_index];
         bounds.push_back(b_i);
         std::cout << ", " << b_i;
-        ++generators_iterator;
+        ++generators_index;
     }
     std::cout << ")" << std::endl << std::endl;
 
     return bounds;
 }
 
-int NumericalSemigroup::ikp_solution(std::vector<int> lambda) {
+int NumericalSemigroup::ikp_solution(std::vector<int> lambda, std::vector<int> new_generators) {
 
     /* returns v = \sum_{i=1}^{n} \lambda_i * a_i */
     int value = 0;
-    if (lambda.size() != this->generators.size()){
+    if (lambda.size() != new_generators.size()){
         std::cout << "Error: Lambda size different to number of generators" << std::endl;
         exit(0);
     } else {
         int lambda_index = 0;
-        std::set<int>::iterator it = this->generators.begin();
-        while (it != this->generators.end()){
-            value += (*it)*lambda[lambda_index];
-            ++it;
+        while (lambda_index < lambda.size()) {
+            value += lambda[lambda_index] * new_generators[lambda_index];
             ++lambda_index;
         }
     }
@@ -163,15 +161,27 @@ bool NumericalSemigroup::membership(int t) {
 
 bool NumericalSemigroup::membership_core(int t, std::vector<int> new_generators) {
 
-    /* print new generators */
-    // std::cout << "New generators: ";
-    // for (int i = 0; i < new_generators.size(); ++i) {
-    //     std::cout << new_generators[i] << "\t";
-    // }
-    // std::cout << std::endl;
+    /* check frobenius number bound */
     int bound = this->frobenius_number_bound();
     if (t > bound) {
         return true;
+    }
+
+    /* calculate bounds for lambda solution */
+    std::vector<int> bounds = this->ikp_bounds(t, new_generators);
+
+    /* calculate sylvester denumerant */
+    std::vector<int> lambda (new_generators.size(),0);
+
+    while (!lambda.empty()) {
+
+        /* check if this lambda is a solution */
+        if (t == ikp_solution(lambda,new_generators)) {
+            return true;
+        }
+
+        /* calculate next lambda */
+        lambda = next_lambda(lambda, bounds);
     }
 
     return false;
@@ -207,19 +217,16 @@ void NumericalSemigroup::print_generators() {
     }
 }
 
-void NumericalSemigroup::print_ikp_solution(std::vector<int> lambda) {
-    if (lambda.size() != this->generators.size()) {
+void NumericalSemigroup::print_ikp_solution(std::vector<int> lambda, std::vector<int> new_generators) {
+    if (lambda.size() != new_generators.size()) {
         std::cout << "Error: Lambda size different to number of generators" << std::endl;
         exit(0);
     } else {
         int lambda_index = 0;
-        std::set<int>::iterator generators_iterator = this->generators.begin();
-        std::cout << lambda[lambda_index] << "*(" << *generators_iterator << ")";
-        ++generators_iterator;
+        std::cout << lambda[lambda_index] << "*(" << new_generators[lambda_index] << ")";
         ++lambda_index;
-        while (generators_iterator != this->generators.end()) {
-            std::cout << " + " << lambda[lambda_index] << "*(" << *generators_iterator << ")";
-            ++generators_iterator;
+        while (lambda_index < lambda.size()) {
+            std::cout << " + " << lambda[lambda_index] << "*(" << new_generators[lambda_index] << ")";
             ++lambda_index;
         }
     }
@@ -233,28 +240,24 @@ void NumericalSemigroup::print_numerical_semigroup() {
 
 int NumericalSemigroup::sylvester_denumerant(int t, bool with_solutions) {
 
-    /* init */
-    std::cout << std::endl << "  - Calculating Sylvester denumerant d(" << t << "; ";
-    this->print_generators();
-    std::cout << ") -" << std::endl << std::endl;
     int denumerant = 0;
 
     /* calculate bounds for lambda solution */
-    std::vector<int> bounds = this->ikp_bounds(t);
-
-    /* calculate sylvester denumerant */
+    std::vector<int> new_generators (this->generators.begin(), this->generators.end());
+    std::vector<int> bounds = this->ikp_bounds(t, new_generators);
     std::vector<int> lambda (this->generators.size(),0);
 
+    /* calculate sylvester denumerant */
     while (!lambda.empty()) {
 
         /* check if this lambda is a solution */
-        if (t == ikp_solution(lambda)) {
+        if (t == ikp_solution(lambda, new_generators)) {
 
             /* update denumerant */
             ++denumerant;
             /* print solution */
             if (with_solutions) std::cout << "Solution " << denumerant << ":" << std::endl;
-            if (with_solutions) this->print_ikp_solution(lambda);
+            if (with_solutions) this->print_ikp_solution(lambda, new_generators);
             if (with_solutions) std::cout << std::endl;
         }
 

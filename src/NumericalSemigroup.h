@@ -47,11 +47,11 @@ public:
     int get_number_generators();
 
 	//! @return The upper bounds for the ikp solutions of $t$ with respect to $a_1,...,a_n$
-	std::vector<int> ikp_bounds(int t);
+	std::vector<int> ikp_bounds(int t, std::vector<int> new_generators);
 
 	//! @param 	lambda A vector of integers with the same size as the number of generators of this numerical semigroup
 	//! @return The product $\sum_{i=1}^{n} \lambda_i a_i$
-	int ikp_solution(std::vector<int> lambda);
+	int ikp_solution(std::vector<int> lambda, std::vector<int> new_generators);
 
 	//! @return A bool that indicates if the present system of generators generates a numerical semigroup
 	bool is_numerical_semigroup();
@@ -68,7 +68,7 @@ public:
 	void print_generators();
 
 	//! @brief Prints the product $\sum_{i=1}^{n} \lambda_i a_i$ (not the result, which is given by ikp_solution)
-	void print_ikp_solution(std::vector<int> lambda);
+	void print_ikp_solution(std::vector<int> lambda, std::vector<int> new_generators);
 
 	//! @brief Prints the numerical semigroup in the format $S = <a_1,...,a_n>$
 	void print_numerical_semigroup();
