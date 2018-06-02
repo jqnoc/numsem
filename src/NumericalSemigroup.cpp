@@ -48,6 +48,14 @@ bool NumericalSemigroup::add_generator(int generator) {
     return ret.second;
 }
 
+int NumericalSemigroup::frobenius_number() {
+    std::vector<int> set_gaps = this->gaps();
+    if (set_gaps.size() == 0) {
+        return -1;
+    }
+    return set_gaps[set_gaps.size() - 1];
+}
+
 int NumericalSemigroup::frobenius_number_bound() {
     int a_1 = *this->generators.begin();
     int a_n = *this->generators.rbegin();
@@ -92,20 +100,20 @@ std::vector<int> NumericalSemigroup::ikp_bounds(int t, std::vector<int> new_gene
     /* calculate and print bounds as b_i = \floor (t / a_i) */
     /* first bound */
     int generators_index = 0;
-    std::cout << "Bounds for t = " << t << ": (";
+    //std::cout << "Bounds for t = " << t << ": (";
     int b_i = t / new_generators[generators_index];
     bounds.push_back(b_i);
-    std::cout << b_i;
+    //std::cout << b_i;
     ++generators_index;
 
     /* rest of bounds */
     while (generators_index < new_generators.size()) {
         b_i = t / new_generators[generators_index];
         bounds.push_back(b_i);
-        std::cout << ", " << b_i;
+        //std::cout << ", " << b_i;
         ++generators_index;
     }
-    std::cout << ")" << std::endl << std::endl;
+    //std::cout << ")" << std::endl << std::endl;
 
     return bounds;
 }

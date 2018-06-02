@@ -34,6 +34,8 @@ public:
 
     void numsem_init();
 
+    void numsem_frobenius_number();
+
     void numsem_gaps();
 
     void numsem_membership();

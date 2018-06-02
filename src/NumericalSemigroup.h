@@ -34,6 +34,9 @@ public:
     //! @return True if the element was already inside the semigroup
 	bool add_generator(int generator);
 
+	//! @return Calculates the Frobenius number of the numerical semigroup
+	int frobenius_number();
+
 	//! @return Calculates the best lower bound for the Frobenius number from a number of criteria
 	int frobenius_number_bound();
 

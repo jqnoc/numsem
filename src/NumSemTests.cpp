@@ -80,9 +80,12 @@ void NumSemTests::numsem_init() {
     }
 }
 
+void NumSemTests::numsem_frobenius_number() {
+}
+
 void NumSemTests::numsem_gaps() {
     std::vector<int> set_gaps = this->ns->gaps();
-    if (set_gaps.size() = 0) {
+    if (set_gaps.size() == 0) {
         std::cout << "G(S) = Ø" << std::endl;
     } else {
         std::cout << "G(S) = {" << set_gaps[0];
@@ -118,8 +121,9 @@ void NumSemTests::numsem_sylvester_denumerant() {
 }
 
 void NumSemTests::print_numsem_options() {
+    std::cout << std::endl;
     this->ns->print_numerical_semigroup();
-    std::cout << "Select an option:" << std::endl;
+    std::cout << std::endl << std::endl << "Select an option:" << std::endl;
     std::cout << "\t" << this->number_of_options-4 << ". Calculate the set of gaps of S." << std::endl;
     std::cout << "\t" << this->number_of_options-3 << ". Solve the membership problem for S and t." << std::endl;
     std::cout << "\t" << this->number_of_options-2 << ". Calculate the Sylvester denumerant d(t;S)." << std::endl;
