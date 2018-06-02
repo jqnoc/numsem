@@ -33,6 +33,8 @@ public:
 
     void membership_test();
 
+    void numsem_init();
+
     void sylvester_polynomial_graph();
 
 };

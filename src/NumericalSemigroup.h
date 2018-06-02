@@ -34,17 +34,20 @@ public:
     //! @return True if the element was already inside the semigroup
 	bool add_generator(int generator);
 
+	//! @return Calculates the best lower bound for the Frobenius number from a number of criteria */
+	int frobenius_number_bound();
+
 	//! @brief 	Calculates the greatest common divisor of two integers
 	//! @param 	a First integers
 	//! @param 	b Second integers
 	//! @return gcd(a,b)
 	int gcd(int a, int b);
 
-	//! @return Calculates the best lower bound for the Frobenius number from a number of criteria */
-	int get_frobenius_number_bound();
-
 	//! @return The number of generators of the current numerical semigroup
     int get_number_generators();
+
+	//! @return The upper bounds for the ikp solutions of $t$ with respect to $a_1,...,a_n$
+	std::vector<int> ikp_bounds(int t);
 
 	//! @param 	lambda A vector of integers with the same size as the number of generators of this numerical semigroup
 	//! @return The product $\sum_{i=1}^{n} \lambda_i a_i$
@@ -72,9 +75,6 @@ public:
 
 	//! @return The Sylvester denumerant of the integer $t$ with respect to the system of generators of the present numerical semigroup
 	int sylvester_denumerant(int t, bool with_solutions);
-
-	//! @return The upper bounds for the ikp solutions of $t$ with respect to $a_1,...,a_n$
-	std::vector<int> sylvester_denumerant_bounds(int t);
 
 };
 

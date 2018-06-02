@@ -10,7 +10,7 @@
 
 NumSemTests::NumSemTests(){
     //this->sylvester_polynomial_graph();
-    this->membership_test();
+    this->numsem_init();
 }
 
 int NumSemTests::calculate_sylvester_denumerant() {
@@ -56,6 +56,22 @@ void NumSemTests::membership_test() {
         } else {
             std::cout << "NO";
         }
+        std::cout << std::endl;
+    }
+}
+
+void NumSemTests::numsem_init() {
+    this->ns = this->initialize_numerical_semigroup_input();
+    std::cout << "Select an option:" << std::endl;
+    std::cout << "\t1. Solve the membership problem for S and t." << std::endl;
+    std::cout << "\t2. Calculate the Sylvester denumerant d(t;S)." << std::endl;
+    std::cout << "\t3. Define a new numerical semigroup." << std::endl;
+    int option;
+    std::cin >> option;
+    std::cout << std::endl;
+    while (option > 3 || option < 1) {
+        std::cout << "Please, select a valid option." << std::endl;
+        std::cin >> option;
         std::cout << std::endl;
     }
 }
