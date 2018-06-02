@@ -19,6 +19,7 @@ class NumSemTests
 {
 private:
     NumericalSemigroup* ns;
+    int number_of_options;
 public:
 
     //! @brief Constructor
@@ -31,9 +32,11 @@ public:
 
     NumericalSemigroup* initialize_numerical_semigroup_input();
 
-    void membership_test();
+    void numsem_membership();
 
     void numsem_init();
+
+    void print_numsem_options();
 
     void sylvester_polynomial_graph();
 
