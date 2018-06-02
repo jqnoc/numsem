@@ -10,7 +10,7 @@
 
 NumSemTests::NumSemTests(){
     //this->sylvester_polynomial_graph();
-    this->number_of_options = 5;
+    this->number_of_options = 6;
     this->numsem_init();
 }
 
@@ -76,11 +76,17 @@ void NumSemTests::numsem_init() {
             this->print_numsem_options();
             std::cin >> option;
             std::cout << std::endl;
+        } else if (option == this->number_of_options - 5) {
+            this->numsem_frobenius_number();
+            this->print_numsem_options();
+            std::cin >> option;
+            std::cout << std::endl;
         }
     }
 }
 
 void NumSemTests::numsem_frobenius_number() {
+    std::cout << "f(S) = " << this->ns->frobenius_number() << std::endl;
 }
 
 void NumSemTests::numsem_gaps() {
@@ -124,6 +130,7 @@ void NumSemTests::print_numsem_options() {
     std::cout << std::endl;
     this->ns->print_numerical_semigroup();
     std::cout << std::endl << std::endl << "Select an option:" << std::endl;
+    std::cout << "\t" << this->number_of_options-5 << ". Calculate the Frobenius number of S." << std::endl;
     std::cout << "\t" << this->number_of_options-4 << ". Calculate the set of gaps of S." << std::endl;
     std::cout << "\t" << this->number_of_options-3 << ". Solve the membership problem for S and t." << std::endl;
     std::cout << "\t" << this->number_of_options-2 << ". Calculate the Sylvester denumerant d(t;S)." << std::endl;
