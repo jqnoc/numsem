@@ -6,9 +6,9 @@ numsem
 An application in C++ for solving diverse problems in numerical semigroups:
 * Numerical semigroup membership
 * Sylvester denumerant
-* Minimal system of generators
 * Frobenius number
-* Apéry set
+* Apéry set (*in development*)
+* Minimal system of generators (*in development*)
 
 Building
 --------
