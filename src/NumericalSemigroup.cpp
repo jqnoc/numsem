@@ -55,6 +55,17 @@ int NumericalSemigroup::frobenius_number_bound() {
     return bound;
 }
 
+std::vector<int> NumericalSemigroup::gaps() {
+    std::vector<int> set_gaps;
+    int bound = this->frobenius_number_bound();
+    for (int i = 1; i <= bound; ++i) {
+        if (! this->membership(i)) {
+            set_gaps.push_back(i);
+        }
+    }
+    return set_gaps;
+}
+
 int NumericalSemigroup::gcd (int a, int b) {
 
     /* euclidean algorithm for the greatest common divisor ~ gcd(a,b) */

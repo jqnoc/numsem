@@ -34,8 +34,11 @@ public:
     //! @return True if the element was already inside the semigroup
 	bool add_generator(int generator);
 
-	//! @return Calculates the best lower bound for the Frobenius number from a number of criteria */
+	//! @return Calculates the best lower bound for the Frobenius number from a number of criteria
 	int frobenius_number_bound();
+
+	//! @return The set of gaps of the numerical semigroup
+	std::vector<int> gaps();
 
 	//! @brief 	Calculates the greatest common divisor of two integers
 	//! @param 	a First integers
