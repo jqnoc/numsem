@@ -27,11 +27,13 @@ public:
 	//! @brief Empty destructor
 	~NumSemTests();
 
-    void test_1();
+    int calculate_sylvester_denumerant();
 
     NumericalSemigroup* initialize_numerical_semigroup_input();
 
-    int calculate_sylvester_denumerant();
+    void membership_test();
+
+    void sylvester_polynomial_graph();
 
 };
 

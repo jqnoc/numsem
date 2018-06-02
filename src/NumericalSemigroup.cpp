@@ -8,7 +8,7 @@
 
 #include "NumericalSemigroup.h"
 
-NumericalSemigroup::NumericalSemigroup(std::set<int> generators){
+NumericalSemigroup::NumericalSemigroup(std::set<int> generators) {
 
     /* get system of generators and initialize is_num_sem */
     this->generators = generators;
@@ -40,7 +40,7 @@ NumericalSemigroup::NumericalSemigroup(std::set<int> generators){
     }
 }
 
-bool NumericalSemigroup::add_generator(int generator){
+bool NumericalSemigroup::add_generator(int generator) {
 
     // TODO remains to be checked wheter the new generator was already contained in the numerical semigroup */
     std::pair<std::set<int>::iterator,bool> ret;
@@ -48,7 +48,7 @@ bool NumericalSemigroup::add_generator(int generator){
     return ret.second;
 }
 
-int NumericalSemigroup::gcd (int a, int b){
+int NumericalSemigroup::gcd (int a, int b) {
 
     /* euclidean algorithm for the greatest common divisor ~ gcd(a,b) */
     int c;
@@ -60,13 +60,20 @@ int NumericalSemigroup::gcd (int a, int b){
     return b;
 }
 
-int NumericalSemigroup::get_number_generators(){
+int get_frobenius_number_bound() {
+    int a_1 = this->generators.begin();
+    int a_n = this->generators.rbegin();
+    int bound = (a_1 - 1)*(a_n - 1) - 1;
+    return bound;
+}
+
+int NumericalSemigroup::get_number_generators() {
 
     /* returns the number of generators of S = <A> (i.e., |A|) */
     return this->generators.size();
 }
 
-int NumericalSemigroup::ikp_solution(std::vector<int> lambda){
+int NumericalSemigroup::ikp_solution(std::vector<int> lambda) {
 
     /* returns v = \sum_{i=1}^{n} \lambda_i * a_i */
     int value = 0;
@@ -85,10 +92,61 @@ int NumericalSemigroup::ikp_solution(std::vector<int> lambda){
     return value;
 }
 
-bool NumericalSemigroup::is_numerical_semigroup(){
+bool NumericalSemigroup::is_numerical_semigroup() {
 
     /* returns true if the present system of generators generates a numerical semigroup (is_num_sem is calculated in the constructor) */
     return this->is_num_sem;
+}
+
+bool NumericalSemigroup::membership(int t) {
+
+    /* check if t <= 0 */
+    if (t < 0) {
+        return false;
+    } else if (t == 0) {
+        return true;
+    }
+
+    /* get and process a_1 (i.e., the smallest generator of the numerical semigroup) */
+    std::set<int>::iterator generators_iterator = this->generators.begin();
+    int a_1 = *generators_iterator;
+    if (t < a_1) {
+        return false;
+    } else if (t % a_1 == 0) {
+        return true;
+    }
+    std::vector<int> new_generators;
+    new_generators.push_back(a_1);
+    ++generators_iterator;
+
+    /* get and process the rest of generators */
+    while (generators_iterator != this->generators.end()) {
+        int a_i = *generators_iterator;
+        if (t < a_i) {
+            /* solves the membership for the semigroup S = <a_1,...,a_i> */
+            return this->membership_core(t, new_generators);
+        } else if (t % a_i == 0) {
+            return true;
+        }
+        new_generators.push_back(a_i);
+        ++generators_iterator;
+    }
+
+    return this->membership_core(t, new_generators);
+}
+
+bool NumericalSemigroup::membership_core(int t, std::vector<int> new_generators) {
+
+    /* print new generators */
+    // std::cout << "New generators: ";
+    // for (int i = 0; i < new_generators.size(); ++i) {
+    //     std::cout << new_generators[i] << "\t";
+    // }
+    // std::cout << std::endl;
+
+    int a_1 = new_generators[0];
+    int a_n = new_generators[new_generators.size() - 1];
+    return false;
 }
 
 std::vector<int> NumericalSemigroup::next_lambda(std::vector<int> lambda, std::vector<int> bounds){
@@ -107,7 +165,7 @@ std::vector<int> NumericalSemigroup::next_lambda(std::vector<int> lambda, std::v
     return std::vector<int>();
 }
 
-void NumericalSemigroup::print_generators(){
+void NumericalSemigroup::print_generators() {
 
     /* print first generator */
     std::set<int>::iterator it = this->generators.begin();
@@ -115,14 +173,14 @@ void NumericalSemigroup::print_generators(){
     ++it;
 
     /* print the rest of generators */
-    while (it != this->generators.end()){
+    while (it != this->generators.end()) {
         std::cout << ", " << *it;
         ++it;
     }
 }
 
-void NumericalSemigroup::print_ikp_solution(std::vector<int> lambda){
-    if (lambda.size() != this->generators.size()){
+void NumericalSemigroup::print_ikp_solution(std::vector<int> lambda) {
+    if (lambda.size() != this->generators.size()) {
         std::cout << "Error: Lambda size different to number of generators" << std::endl;
         exit(0);
     } else {
@@ -131,7 +189,7 @@ void NumericalSemigroup::print_ikp_solution(std::vector<int> lambda){
         std::cout << lambda[lambda_index] << "*(" << *generators_iterator << ")";
         ++generators_iterator;
         ++lambda_index;
-        while (generators_iterator != this->generators.end()){
+        while (generators_iterator != this->generators.end()) {
             std::cout << " + " << lambda[lambda_index] << "*(" << *generators_iterator << ")";
             ++generators_iterator;
             ++lambda_index;
@@ -139,13 +197,13 @@ void NumericalSemigroup::print_ikp_solution(std::vector<int> lambda){
     }
 }
 
-void NumericalSemigroup::print_numerical_semigroup(){
+void NumericalSemigroup::print_numerical_semigroup() {
     std::cout << "S = <";
     this->print_generators();
     std::cout << ">";
 }
 
-int NumericalSemigroup::sylvester_denumerant(int t, bool with_solutions){
+int NumericalSemigroup::sylvester_denumerant(int t, bool with_solutions) {
 
     /* init */
     std::cout << std::endl << "  - Calculating Sylvester denumerant d(" << t << "; ";
@@ -159,10 +217,10 @@ int NumericalSemigroup::sylvester_denumerant(int t, bool with_solutions){
     /* calculate sylvester denumerant */
     std::vector<int> lambda (this->generators.size(),0);
 
-    while (!lambda.empty()){
+    while (!lambda.empty()) {
 
         /* check if this lambda is a solution */
-        if (t == ikp_solution(lambda)){
+        if (t == ikp_solution(lambda)) {
 
             /* update denumerant */
             ++denumerant;
@@ -197,7 +255,7 @@ std::vector<int> NumericalSemigroup::sylvester_denumerant_bounds(int t){
     ++generators_iterator;
 
     /* rest of bounds */
-    while (generators_iterator != this->generators.end()){
+    while (generators_iterator != this->generators.end()) {
         b_i = t / *generators_iterator;
         bounds.push_back(b_i);
         std::cout << ", " << b_i;

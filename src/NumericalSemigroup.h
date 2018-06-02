@@ -40,6 +40,9 @@ public:
 	//! @return gcd(a,b)
 	int gcd(int a, int b);
 
+	//! @return Calculates the best lower bound for the Frobenius number from a number of criteria */
+	int get_frobenius_number_bound();
+
 	//! @return The number of generators of the current numerical semigroup
     int get_number_generators();
 
@@ -49,6 +52,11 @@ public:
 
 	//! @return A bool that indicates if the present system of generators generates a numerical semigroup
 	bool is_numerical_semigroup();
+
+	//! @return True if t is inside the numerical NumericalSemigroup
+	bool membership(int t);
+
+	bool membership_core(int t, std::vector<int> new_generators);
 
 	//! @return Next lambda iteration (used in the function sylvester_denumerant)
 	std::vector<int> next_lambda(std::vector<int> lambda, std::vector<int> bounds);
