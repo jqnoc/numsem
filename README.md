@@ -7,6 +7,7 @@ An application in C++ for solving diverse problems in numerical semigroups:
 * Numerical semigroup membership
 * Sylvester denumerant
 * Frobenius number
+* Set of gaps
 * Apéry set (*in development*)
 * Minimal system of generators (*in development*)
 
