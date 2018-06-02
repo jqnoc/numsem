@@ -34,6 +34,8 @@ public:
 
     void numsem_membership();
 
+    void numsem_sylvester_denumerant();
+
     void numsem_init();
 
     void print_numsem_options();
