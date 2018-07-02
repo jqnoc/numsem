@@ -9,8 +9,7 @@
 #include "NumSemTests.h"
 
 NumSemTests::NumSemTests(){
-    //this->sylvester_polynomial_graph();
-    this->number_of_options = 6;
+    this->number_of_options = 7;
     this->numsem_init();
 }
 
@@ -62,21 +61,26 @@ void NumSemTests::numsem_init() {
             std::cin >> option;
             std::cout << std::endl;
         } else if (option == this->number_of_options - 2) {
-            this->numsem_sylvester_denumerant();
+            this->sylvester_polynomial_graph();
             this->print_numsem_options();
             std::cin >> option;
             std::cout << std::endl;
         } else if (option == this->number_of_options - 3) {
-            this->numsem_membership();
+            this->numsem_sylvester_denumerant();
             this->print_numsem_options();
             std::cin >> option;
             std::cout << std::endl;
         } else if (option == this->number_of_options - 4) {
-            this->numsem_gaps();
+            this->numsem_membership();
             this->print_numsem_options();
             std::cin >> option;
             std::cout << std::endl;
         } else if (option == this->number_of_options - 5) {
+            this->numsem_gaps();
+            this->print_numsem_options();
+            std::cin >> option;
+            std::cout << std::endl;
+        } else if (option == this->number_of_options - 6) {
             this->numsem_frobenius_number();
             this->print_numsem_options();
             std::cin >> option;
@@ -130,10 +134,11 @@ void NumSemTests::print_numsem_options() {
     std::cout << std::endl;
     this->ns->print_numerical_semigroup();
     std::cout << std::endl << std::endl << "Select an option:" << std::endl;
-    std::cout << "\t" << this->number_of_options-5 << ". Calculate the Frobenius number of S." << std::endl;
-    std::cout << "\t" << this->number_of_options-4 << ". Calculate the set of gaps of S." << std::endl;
-    std::cout << "\t" << this->number_of_options-3 << ". Solve the membership problem for S and t." << std::endl;
-    std::cout << "\t" << this->number_of_options-2 << ". Calculate the Sylvester denumerant d(t;S)." << std::endl;
+    std::cout << "\t" << this->number_of_options-6 << ". Calculate the Frobenius number of S." << std::endl;
+    std::cout << "\t" << this->number_of_options-5 << ". Calculate the set of gaps of S." << std::endl;
+    std::cout << "\t" << this->number_of_options-4 << ". Solve the membership problem for S and t." << std::endl;
+    std::cout << "\t" << this->number_of_options-3 << ". Calculate the Sylvester denumerant d(t;S)." << std::endl;
+    std::cout << "\t" << this->number_of_options-2 << ". Print to file the Sylvester denumerant graph d(t;S)." << std::endl;
     std::cout << "\t" << this->number_of_options-1 << ". Define a new numerical semigroup." << std::endl;
     std::cout << "\t" << this->number_of_options   << ". Exit." << std::endl;
 }
@@ -141,16 +146,16 @@ void NumSemTests::print_numsem_options() {
 void NumSemTests::sylvester_polynomial_graph() {
 
     std::ofstream ofs;
-    ofs.open ("sylvester_denumerant.txt", std::ofstream::out | std::ofstream::trunc);
+    ofs.open ("sylvester_polynomial.txt", std::ofstream::out | std::ofstream::trunc);
     std::stringstream ss1;
     std::stringstream ss2;
     ss1 << "[";
     ss2 << "[";
 
-    this->ns = this->initialize_numerical_semigroup_input();
+    // this->ns = this->initialize_numerical_semigroup_input();
 
     int upper_bound;
-    std::cout << "Upper bound for the Sylvester denumerant: ";
+    std::cout << "Upper bound for the Sylvester polynomial graph: ";
     std::cin >> upper_bound;
     std::cout << std::endl;
 
