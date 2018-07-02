@@ -166,7 +166,7 @@ bool NumericalSemigroup::membership(int t) {
     while (generators_iterator != this->generators.end()) {
         int a_i = *generators_iterator;
         if (t < a_i) {
-            /* solves the membership for the semigroup S = <a_1,...,a_i> */
+            /* solves the membership for the set S = <a_1,...,a_i> */
             return this->membership_core(t, new_generators);
         } else if (t % a_i == 0) {
             return true;
