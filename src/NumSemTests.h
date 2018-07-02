@@ -46,6 +46,8 @@ public:
 
     void sylvester_polynomial_graph();
 
+    void sylvester_denumerant_iter();
+
 };
 
 #endif
