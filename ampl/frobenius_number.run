@@ -8,7 +8,6 @@ for {l in 0..s-1} {
     let i := l;
     solve;
     if T > m then let m := T;
-
 }
 param f := m - s;
 display f;
