@@ -1,0 +1,14 @@
+reset;
+model apery_set_member.mod;
+data numerical_semigroup.dat;
+let s := a[1];
+option solver gurobi;
+param m default 0;
+for {l in 0..s-1} {
+    let i := l;
+    solve;
+    if T > m then let m := T;
+
+}
+param f := m - s;
+display f;

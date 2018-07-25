@@ -1,0 +1,12 @@
+reset;
+model apery_set_member.mod;
+data numerical_semigroup.dat;
+let s := 30;
+option solver gurobi;
+param apery_set {0..s-1};
+for {l in 0..s-1} {
+    let i := l;
+    solve;
+    let apery_set[l] := T;
+}
+display apery_set;
