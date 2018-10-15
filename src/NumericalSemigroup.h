@@ -20,6 +20,7 @@ private:
 
 	std::set<int> generators;	//!< System of generators of the numerical semigroup (default: NULL)
 	bool is_num_sem;			//!< True if 'generators' is a valid system of generators (i.e., if gcd(a_1,...,a_n) = 1)
+	int n_iters;
 
 public:
 
@@ -81,6 +82,12 @@ public:
 
 	//! @return The Sylvester denumerant of the integer $t$ with respect to the system of generators of the present numerical semigroup
 	int sylvester_denumerant(int t, bool with_solutions);
+
+	int number_of_bits(int t);
+
+	int number_of_iterations();
+
+	void write_ampl_numerical_semigroup_dat();
 
 };
 

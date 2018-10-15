@@ -6,6 +6,8 @@
  *
  */
 
+#include <chrono>
+
 #include "NumSemTests.h"
 
 NumSemTests::NumSemTests(){
@@ -71,7 +73,7 @@ void NumSemTests::numsem_init() {
             std::cin >> option;
             std::cout << std::endl;
         } else if (option == 4) {
-            this->numsem_sylvester_denumerant();
+            this->numsem_sylvester_denumerant(1);
             this->print_numsem_options();
             std::cin >> option;
             std::cout << std::endl;
@@ -119,13 +121,9 @@ void NumSemTests::numsem_membership() {
     std::cout << std::endl;
 }
 
-void NumSemTests::numsem_sylvester_denumerant() {
-    std::cout << "Sylvester denumerant input (integer): ";
-    int sd_input;
-    std::cin >> sd_input;
-    std::cout << std::endl;
-    int sd = this->ns->sylvester_denumerant(sd_input,true);
-    std::cout << "d(" << sd_input << "; ";
+void NumSemTests::numsem_sylvester_denumerant(int t) {
+    int sd = this->ns->sylvester_denumerant(t,true);
+    std::cout << "d(" << t << "; ";
     this->ns->print_generators();
     std::cout << ") = " << sd << std::endl << std::endl;
 }
@@ -147,23 +145,24 @@ void NumSemTests::sylvester_polynomial_graph() {
 
     std::ofstream ofs;
     ofs.open ("sylvester_polynomial.txt", std::ofstream::out | std::ofstream::trunc);
-    std::stringstream ss1;
-    std::stringstream ss2;
-    ss1 << "[";
-    ss2 << "[";
-    ss3 << "[";
+    ofs.close();
 
     int upper_bound;
     std::cout << "Upper bound for the Sylvester polynomial graph: ";
     std::cin >> upper_bound;
     std::cout << std::endl;
 
-    for (int i = 0; i < upper_bound; ++i){
-        ss1 << i << ", ";
-        ss2 << this->ns->sylvester_denumerant(i, false) << ", ";
+    for (int i = 1; i <= upper_bound; ++i){
+
+        /* calculate denumerant */
+        auto begin = std::chrono::high_resolution_clock::now();
+        int denumerant = this->ns->sylvester_denumerant(i, false);
+        auto end = std::chrono::high_resolution_clock::now();
+
+        ofs.open ("sylvester_polynomial.txt", std::ofstream::out | std::ofstream::app);
+        ofs << i << " " << denumerant << " " << this->ns->number_of_bits(i) << " " << this->ns->number_of_iterations() << " " << std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count() << std::endl;
+        ofs.close();
     }
-    ofs << ss1.str() << "]" << std::endl << ss2.str() << "]"  << std::endl;
-    ofs.close();
 
 }
 

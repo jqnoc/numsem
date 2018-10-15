@@ -10,7 +10,7 @@ option solver gurobi;
 
 for {l in 0..s-1} {
     let i := l;
-    let lambda := 0;
+    let lambda := 100;
     let it := 0;
     let rest := 1;
     repeat {

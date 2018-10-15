@@ -6,6 +6,8 @@
  *
  */
 
+#include <fstream>
+#include <math.h>
 #include "NumericalSemigroup.h"
 
 NumericalSemigroup::NumericalSemigroup(std::set<int> generators) {
@@ -24,14 +26,10 @@ NumericalSemigroup::NumericalSemigroup(std::set<int> generators) {
     }
     if (d == 1){
         /* gcd (a_1,...,a_n) = 1 - we have a numerical semigroup */
-        std::cout << "Created numerical semigroup ";
-        this->print_numerical_semigroup();
-        std::cout << std::endl;
         this->is_num_sem = true;
-    	std::cout << "Total number of generators: " << this->get_number_generators() << std::endl;
     } else {
         /* gcd (a_1,...,a_n) != 1 - we do not have a numerical semigroup and the program exits */
-        std::cout << "Error: ";
+        std::cout << "ERROR: ";
         this->print_numerical_semigroup();
         std::cout << " is not a numerical semigroup, as gcd(";
         this->print_generators();
@@ -261,6 +259,8 @@ int NumericalSemigroup::sylvester_denumerant(int t, bool with_solutions) {
 
     int denumerant = 0;
 
+    this->n_iters = 0;
+
     /* calculate bounds for lambda solution */
     std::vector<int> new_generators (this->generators.begin(), this->generators.end());
     std::vector<int> bounds = this->ikp_bounds(t, new_generators);
@@ -281,11 +281,46 @@ int NumericalSemigroup::sylvester_denumerant(int t, bool with_solutions) {
         }
 
         /* calculate next lambda */
+        ++this->n_iters;
         lambda = next_lambda(lambda, bounds);
     }
 
-    std::cout << std::endl << "d(" << t << "; ";
-    this->print_generators();
-    std::cout << ") = " << denumerant << std::endl << std::endl;
+    // std::cout << std::endl << "d(" << t << "; ";
+    // this->print_generators();
+    // std::cout << ") = " << denumerant << std::endl << std::endl;
     return denumerant;
+}
+
+int NumericalSemigroup::number_of_bits(int t) {
+    int n_bits = 0;
+
+    std::set<int>::iterator it = this->generators.begin();
+    while (it != this->generators.end()) {
+        n_bits += (1 + floor(log2(((double)t) / ((double) *it))));
+        ++it;
+    }
+
+    return n_bits < 0 ? 0 : n_bits;
+}
+
+int NumericalSemigroup::number_of_iterations() {
+    return this->n_iters;
+}
+
+void NumericalSemigroup::write_ampl_numerical_semigroup_dat() {
+
+    /* open file */
+    std::ofstream output_file;
+    output_file.open("numerical_semigroup.dat", std::ofstream::out | std::ofstream::trunc);
+
+    output_file << "param n := " << this->generators.size() << ";" << std::endl << "param a :=";
+    int i = 1;
+    for (auto g: this->generators) {
+        output_file << std::endl << "\t" << i << "\t" << g;
+        ++i;
+    }
+    output_file << ";" << std::endl;
+
+    /* close file */
+    output_file.close();
 }

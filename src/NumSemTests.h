@@ -40,7 +40,7 @@ public:
 
     void numsem_membership();
 
-    void numsem_sylvester_denumerant();
+    void numsem_sylvester_denumerant(int t);
 
     void print_numsem_options();
 

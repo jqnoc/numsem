@@ -33,3 +33,4 @@ numsem
 
 # Other
 *.txt
+src/InputParser.h

@@ -12,6 +12,7 @@
 #include <fstream>
 #include <math.h>
 
+#include "InputParser.h"
 #include "NumSemTests.h"
 #include "NumericalSemigroup.h"
 
@@ -23,368 +24,166 @@
 int main ( int argc, char *argv[] )
 {
 
-	if (argc > 1) {
-		std::cout << "Error: Too many arguments." << std::endl;
-		return -1;
+	std::cout << std::endl << "===========================================================================================" << std::endl;
+	std::cout << " NumSem v0.1.0" << std::endl;
+	std::cout << " Copyright (C) Joaquín Ossorio-Castillo. All rights reserved." << std::endl;
+	std::cout << " This software is free for non-commercial purposes." << std::endl;
+	std::cout << " Full license information can be found in the LICENSE.txt file." << std::endl;
+	std::cout << " https://github.com/jqnoc/numsem/" << std::endl;
+	std::cout << "===========================================================================================" << std::endl;
+
+	/* define options */
+	std::vector<std::string> list_of_knowns;
+
+	list_of_knowns.push_back("--help");   // help
+    bool opt_help = false;
+
+	std::string opt_file;
+
+	list_of_knowns.push_back("-f");  // Frobenius problem
+	bool opt_frobenius;
+
+	list_of_knowns.push_back("-g");  // set of gaps
+	bool opt_gaps;
+
+	list_of_knowns.push_back("-d");  // Sylvester denumerant
+	list_of_knowns.push_back("-ds");  // Sylvester denumerant (with solutions)
+	int opt_sylvester_denumerant;
+
+	list_of_knowns.push_back("-dg");  // Sylvester denumerant graph
+	int opt_sylvester_denumerant_graph;
+
+	list_of_knowns.push_back("-m");  // numerical semigroup membership
+	int opt_nsmp;
+
+	/* parse arguments */
+	try {
+		InputParser input(argc, argv);
+
+		/* check for empty options */
+		if (input.cmdNoProblem() and input.cmdNoOptions()) {
+            throw "ERROR: no arguments";
+        }
+
+		/* check for errors in options */
+		if (input.isErrorCmd()) {
+            throw "ERROR: wrong command line syntax";
+        }
+
+		/* check for help option */
+		if (input.cmdOptionExists("--help")) {
+            if (not input.getCmdArg("--help").empty()){
+                throw "ERROR: --help option cannot take arguments";
+            }
+            opt_help = true;
+            if (input.getOptionsSize() > 1) {
+                std::cout << "Option --help detected: other options are ignored" << std::endl;
+            }
+        throw "numsem help";
+        }
+
+		/* check for file */
+		if (input.cmdNoProblem()) {
+			throw "ERROR: wrong command line syntax (file must be first argument)";
+		}
+
+		/* initialize numerical semigroup from file */
+		opt_file = input.getProblem();
+		std::fstream ns_file(opt_file, std::ios_base::in);
+		int new_generator;
+		std::set<int> generators;
+		while (ns_file >> new_generator) {
+			if (new_generator > 1) {
+				generators.insert(new_generator);
+			}
+		}
+		NumericalSemigroup* ns = new NumericalSemigroup(generators);
+		std::cout << "Numerical semigroup: ";
+		ns->print_numerical_semigroup();
+		std::cout << std::endl;
+		std::cout << "Total number of generators: " << ns->get_number_generators() << std::endl;
+
+		/* check for unknown options */
+		std::string unknown_options = input.UnknownOptionFound(list_of_knowns);
+        if (not unknown_options.empty()) {
+			throw "ERROR: unknown options";
+        }
+
+		/* Frobenius problem */
+		if (input.cmdOptionExists("-f")) {
+            if (not input.getCmdArg("-f").empty()) {
+                throw "ERROR: option -f cannot take arguments";
+            }
+			opt_frobenius = true;
+			std::cout << "f(S) = " << ns->frobenius_number() << std::endl;
+        }
+
+		/* set of gaps */
+		if (input.cmdOptionExists("-g")) {
+            if (not input.getCmdArg("-g").empty()){
+                throw "ERROR: option -g cannot take arguments";
+            }
+			opt_gaps = true;
+			std::vector<int> set_gaps = ns->gaps();
+		    if (set_gaps.size() == 0) {
+		        std::cout << "G(S) = Ø" << std::endl;
+		    } else {
+		        std::cout << "G(S) = {" << set_gaps[0];
+		        for (int i = 1; i < set_gaps.size(); ++i) {
+		            std::cout << ", " << set_gaps[i];
+		        }
+		        std::cout << "}" << std::endl;
+		    }
+        }
+
+		/* Sylvester denumerant */
+		if (input.cmdOptionExists("-d")) {
+            std::string str_sylvester_denumerant = input.getCmdArg("-d");
+            if (str_sylvester_denumerant.empty()){
+                throw "ERROR: option -d needs an argument";
+            }
+			opt_sylvester_denumerant = stoi(str_sylvester_denumerant);
+			if (opt_sylvester_denumerant < 1) {
+				throw "ERROR: option -d needs an integer greater than 0";
+			}
+			std::cout << "d(" << opt_sylvester_denumerant << ") = " << ns->sylvester_denumerant(opt_sylvester_denumerant,false) << std::endl;
+        }
+
+		/* Sylvester denumerant (with solutions) */
+		if (input.cmdOptionExists("-ds")) {
+            std::string str_sylvester_denumerant = input.getCmdArg("-ds");
+            if (str_sylvester_denumerant.empty()){
+                throw "ERROR: option -ds needs an argument";
+            }
+			opt_sylvester_denumerant = stoi(str_sylvester_denumerant);
+			if (opt_sylvester_denumerant < 1) {
+				throw "ERROR: option -d needs an integer greater than 0";
+			}
+			std::cout << "d(" << opt_sylvester_denumerant << ") = " << ns->sylvester_denumerant(opt_sylvester_denumerant,true) << std::endl;
+        }
+	} catch (char const *e) {
+		if (not std::string(e).empty()) {
+			std::cout << std::endl;
+            std::cout << e << std::endl;
+            std::cout << " Use:" << std::endl;
+            std::cout << "   numsem *file* [options]" << std::endl << std::endl;
+            std::cout << " Available options:" << std::endl;
+            std::cout << "   --help: print the help" << std::endl;
+            std::cout << "   *file*: the file with the generators of the numerical semigroup S" << std::endl;
+            std::cout << "   -f: calculate Frobenius number of S" << std::endl;
+            std::cout << "   -g: calculate set of gaps of S" << std::endl;
+            std::cout << "   -d *t*: calculate Sylvester denumerant for t and S" << std::endl;
+            std::cout << "   -ds *t*: calculate Sylvester denumerant for t and S and print all solutions" << std::endl;
+            std::cout << "   -dg *b*: calculate Sylvester function from 0 to b" << std::endl;
+            std::cout << "   -m *t*: calculate if t is in S" << std::endl;
+            std::cout << std::endl;
+			exit(0);
+		}
 	}
 
-	NumSemTests* nst = new NumSemTests();
+	/* read generators from file */
+
+	//NumSemTests* nst = new NumSemTests();
 
 	return 1;
 }
-
-	// /* parameters */
-	// int n;
-	// std::vector<int> gens;
-	// int i = 0;
-	// bool end = true;
-	//
-	// /* get number of generators */
-	// std::cout << "Introduce the number of generators of the semigroup:" << std::endl;
-	// std::cin >> n;
-	// if (n == 0)
-	// 	exit (0);
-	//
-	// /* get generators */
-	// std::cout << "Introduce the generators of the semigroup:" << std::endl;
-	// while (i < n){
-	// 	int j;
-	// 	std::cin >> j;
-	// 	gens.push_back(j);
-	// 	++i;
-	// }
-	//
-	// /* sort semigroup generators */
-	// struct myclass {
-	// 	bool operator() (int i,int j) { return (i<j);}
-	// } myobject;
-	// std::sort (gens.begin(), gens.end(), myobject);
-	//
-	// /* divide generators by gcd */
-	// int d = gens[0];
-	// i = 1;
-	// while (i < gens.size() && d != 1){
-	// 	d = gcd(d,gens[i]);
-	// 	++i;
-	// }
-	// if (d > 1){
-	// 	for (i = 0; i < gens.size(); ++i){
-	// 		gens[i] = gens[i] / d;
-	// 	}
-	// }
-	// if (gens[0] == 1){
-	// 	std::cout << "The generated semigroup is trivial." << std::endl;
-	// }
-	//
-	// /* get multiplicity of the semigroup */
-	//
-	// int s = gens[0];
-	//
-	// /* apery calculation */
-	//
-	// std::vector<int> apery_set;
-	// apery_set.push_back(0);
-	//
-	// for (int i = 1; i < s; ++i){
-	// 	apery_ilp(gens,s,i);
-	// 	apery_set.push_back(apery_zolp(gens,s,i));
-	// 	apery_qubo(gens,s,i);
-	// }
-	//
-	// /* sort apery */
-	//
-	// std::sort (apery_set.begin(), apery_set.end(), myobject);
-	//
-	// /* print semigroup generators */
-	// std::cout << "S = <" << gens[0];
-	// for (i = 1; i < gens.size(); ++i){
-	// 	std::cout << ", " << gens[i];
-	// }
-	// std::cout << ">" << std::endl;
-	//
-	// /* print multiplicity of the semigroup */
-	//
-	// std::cout << "s = " << s << std::endl;
-	//
-	// /* print apery */
-	//
-	// std::cout << "Ap(S,s) = {" << apery_set[0];
-	// for (int i = 1; i < s; ++i){
-	// 	std:: cout << ", " << apery_set[i];
-	// }
-	// std::cout << "}" << std::endl;
-	//
-	// /* print frobenius */
-	//
-	// std::cout << "f(S) = " << apery_set[apery_set.size() - 1] - s << std::endl;
-
-
-
-// int gcd (int a, int b)
-// {
-//   int c;
-//   while ( a != 0 ) {
-//      c = a; a = b%a;  b = c;
-//   }
-//   return b;
-// }
-//
-// int apery_ilp (std::vector<int> sg_gens, int s, int i)
-// {
-// 	std::ofstream solver_file;
-// 	solver_file.open("apery_tmp.run");
-//
-// 	int result = -1;
-//
-// 	if (solver_file.is_open()) {
-//
-// 		/* print header */
-//
-// 		solver_file << "reset;" << std::endl;
-// 		solver_file << "set VARS := 0.." << sg_gens.size() - 1 << ";" << std::endl;
-// 		solver_file << "var X {i in VARS} integer, >= 0;" << std::endl;
-// 		solver_file << "var K integer, >= 0;" << std::endl;
-//
-// 		/* print objective function */
-//
-// 		solver_file << "minimize Total_Cost:" << std::endl;
-// 		solver_file << "\t" << sg_gens[0] << "*X[0]";
-// 		for (int j = 1; j < sg_gens.size(); ++j){
-// 			solver_file << " + " << sg_gens[j] << "*X[" << j << "]";
-// 		}
-// 		solver_file << ";" << std::endl;
-//
-// 		/* print constraint */
-//
-// 		solver_file << "subject to Constraint:" << std::endl;
-// 		solver_file << "\t" << sg_gens[0] << "*X[0]";
-// 		for (int j = 1; j < sg_gens.size(); ++j){
-// 			solver_file << " + " << sg_gens[j] << "*X[" << j << "]";
-// 		}
-// 		solver_file << " = " << i << " + " << s << "*K;" << std::endl;
-//
-// 		/* print solver options */
-//
-// 		solver_file << "option solver baron;" << std::endl;
-// 		solver_file << "solve;" << std::endl;
-// 		solver_file << "printf \"%s\", Total_Cost > result.txt;" << std::endl;
-//
-// 		/* close file */
-//
-//     	solver_file.close();
-//
-// 		/* launch ampl */
-//
-// 		system("ampl ./apery_tmp.run");
-//
-// 		/* get solution */
-//
-// 		std::ifstream results_file;
-// 		results_file.open("result.txt");
-// 		results_file >> result;
-//
-//
-// 	} else {
-// 		std::cout << "Unable to open file" << std::endl;
-// 	}
-//
-// 	return result;
-// }
-//
-// int apery_zolp (std::vector<int> sg_gens, int s, int i)
-// {
-//
-// 	/* parameters */
-//
-// 	double frob_bound = log2 ((sg_gens[0] - 1)*(sg_gens[sg_gens.size() - 1] - 1) - 1);
-// 	int n_bits = (int)frob_bound;
-//
-// 	std::ofstream solver_file;
-// 	solver_file.open("apery_tmp.run");
-//
-// 	int result = -1;
-//
-// 	if (solver_file.is_open()) {
-//
-// 		/* print header */
-//
-// 		solver_file << "reset;" << std::endl;
-// 		solver_file << "set VARS := 0.." << sg_gens.size() - 1 << ";" << std::endl;
-// 		solver_file << "set VARS2 := 0.." << n_bits - 1 << ";" << std::endl;
-// 		solver_file << "var X {i in VARS, j in VARS2} binary;" << std::endl;
-// 		solver_file << "var K {k in VARS2} binary;" << std::endl;
-//
-// 		/* print objective function */
-//
-// 		solver_file << "minimize Total_Cost:" << std::endl;
-// 		solver_file << "\t" << sg_gens[0] << "*(X[0,0]";
-// 		for (int k = 1; k < n_bits; ++k){
-// 			double power = pow(2,k);
-// 			solver_file << " + " << power << "*X[0," << k << "]";
-// 		}
-// 		solver_file << ")";
-//
-// 		for (int j = 1; j < sg_gens.size(); ++j){
-// 			solver_file << " + " << sg_gens[j] << "*(X[" << j << ",0]";
-// 			for (int k = 1; k < n_bits; ++k){
-// 				double power = pow(2,k);
-// 				solver_file << " + " << power << "*X[" << j << "," << k << "]";
-// 			}
-// 			solver_file << ")";
-// 		}
-// 		solver_file << ";" << std::endl;
-//
-// 		/* print constraint */
-//
-// 		solver_file << "subject to Constraint:" << std::endl;
-// 		solver_file << "\t" << sg_gens[0] << "*(X[0,0]";
-// 		for (int k = 1; k < n_bits; ++k){
-// 			double power = pow(2,k);
-// 			solver_file << " + " << power << "*X[0," << k << "]";
-// 		}
-// 		solver_file << ")";
-//
-// 		for (int j = 1; j < sg_gens.size(); ++j){
-// 			solver_file << " + " << sg_gens[j] << "*(X[" << j << ",0]";
-// 			for (int k = 1; k < n_bits; ++k){
-// 				double power = pow(2,k);
-// 				solver_file << " + " << power << "*X[" << j << "," << k << "]";
-// 			}
-// 			solver_file << ")";
-// 		}
-//
-// 		solver_file << " = " << i << " + " << s << "*(K[0]";
-// 		for (int k = 1; k < n_bits; ++k){
-// 			double power = pow(2,k);
-// 			solver_file << " + " << power << "*K[" << k << "]";
-// 		}
-// 		solver_file << ");" << std::endl;
-//
-// 		/* print solver options */
-//
-// 		solver_file << "option solver baron;" << std::endl;
-// 		solver_file << "solve;" << std::endl;
-// 		solver_file << "display {i in VARS, j in VARS2} X[i,j];" << std::endl;
-// 		solver_file << "display {k in VARS2} K[k];" << std::endl;
-// 		solver_file << "printf \"%s\", Total_Cost > result.txt;" << std::endl;
-//
-// 		/* close file */
-//
-//     	solver_file.close();
-//
-// 		/* launch ampl */
-//
-// 		system("ampl ./apery_tmp.run");
-//
-// 		/* get solution */
-//
-// 		std::ifstream results_file;
-// 		results_file.open("result.txt");
-// 		results_file >> result;
-//
-//
-// 	} else {
-// 		std::cout << "Unable to open file" << std::endl;
-// 	}
-//
-// 	return result;
-// }
-//
-// int apery_qubo (std::vector<int> sg_gens, int s, int i)
-// {
-//
-// 	/* parameters */
-//
-// 	double frob_bound = log2 ((sg_gens[0] - 1)*(sg_gens[sg_gens.size() - 1] - 1) - 1);
-// 	int n_bits = (int)frob_bound;
-//
-// 	std::ofstream solver_file;
-// 	solver_file.open("apery_tmp.run");
-//
-// 	int result = -1;
-//
-// 	if (solver_file.is_open()) {
-//
-// 		/* print header */
-//
-// 		solver_file << "reset;" << std::endl;
-// 		solver_file << "set VARS := 0.." << sg_gens.size() - 1 << ";" << std::endl;
-// 		solver_file << "set VARS2 := 0.." << n_bits - 1 << ";" << std::endl;
-// 		solver_file << "var X {i in VARS, j in VARS2} binary;" << std::endl;
-// 		solver_file << "var K {k in VARS2} binary;" << std::endl;
-//
-// 		/* print objective function */
-//
-// 		solver_file << "minimize Total_Cost:" << std::endl;
-// 		solver_file << "\t" << sg_gens[0] << "*(X[0,0]";
-// 		for (int k = 1; k < n_bits; ++k){
-// 			double power = pow(2,k);
-// 			solver_file << " + " << power << "*X[0," << k << "]";
-// 		}
-// 		solver_file << ")";
-//
-// 		for (int j = 1; j < sg_gens.size(); ++j){
-// 			solver_file << " + " << sg_gens[j] << "*(X[" << j << ",0]";
-// 			for (int k = 1; k < n_bits; ++k){
-// 				double power = pow(2,k);
-// 				solver_file << " + " << power << "*X[" << j << "," << k << "]";
-// 			}
-// 			solver_file << ")";
-// 		}
-// 		solver_file << ";" << std::endl;
-//
-// 		/* print constraint */
-//
-// 		solver_file << "subject to Constraint:" << std::endl;
-// 		solver_file << "\t" << sg_gens[0] << "*(X[0,0]";
-// 		for (int k = 1; k < n_bits; ++k){
-// 			double power = pow(2,k);
-// 			solver_file << " + " << power << "*X[0," << k << "]";
-// 		}
-// 		solver_file << ")";
-//
-// 		for (int j = 1; j < sg_gens.size(); ++j){
-// 			solver_file << " + " << sg_gens[j] << "*(X[" << j << ",0]";
-// 			for (int k = 1; k < n_bits; ++k){
-// 				double power = pow(2,k);
-// 				solver_file << " + " << power << "*X[" << j << "," << k << "]";
-// 			}
-// 			solver_file << ")";
-// 		}
-//
-// 		solver_file << " = " << i << " + " << s << "*(K[0]";
-// 		for (int k = 1; k < n_bits; ++k){
-// 			double power = pow(2,k);
-// 			solver_file << " + " << power << "*K[" << k << "]";
-// 		}
-// 		solver_file << ");" << std::endl;
-//
-// 		/* print solver options */
-//
-// 		solver_file << "option solver baron;" << std::endl;
-// 		solver_file << "solve;" << std::endl;
-// 		solver_file << "display {i in VARS, j in VARS2} X[i,j];" << std::endl;
-// 		solver_file << "display {k in VARS2} K[k];" << std::endl;
-// 		solver_file << "printf \"%s\", Total_Cost > result.txt;" << std::endl;
-//
-// 		/* close file */
-//
-//     	solver_file.close();
-//
-// 		/* launch ampl */
-//
-// 		system("ampl ./apery_tmp.run");
-//
-// 		/* get solution */
-//
-// 		std::ifstream results_file;
-// 		results_file.open("result.txt");
-// 		results_file >> result;
-//
-//
-// 	} else {
-// 		std::cout << "Unable to open file" << std::endl;
-// 	}
-//
-// 	return result;
-// }
