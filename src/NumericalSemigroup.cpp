@@ -15,6 +15,11 @@ NumericalSemigroup::NumericalSemigroup(std::set<int> generators) {
     /* get system of generators and initialize is_num_sem */
     this->generators = generators;
     this->is_num_sem = false;
+    this->write_ampl_numerical_semigroup_dat();
+    this->write_ampl_apery_set_member_mod();
+    this->write_ampl_apery_set_member_run(14, 7);
+    this->write_ampl_apery_set_run(30);
+    this->write_ampl_frobenius_number_run();
 
     /* check if $gcd(a_1,...,a_n) = 1$ */
     std::set<int>::iterator it = this->generators.begin();
@@ -311,8 +316,9 @@ void NumericalSemigroup::write_ampl_numerical_semigroup_dat() {
 
     /* open file */
     std::ofstream output_file;
-    output_file.open("numerical_semigroup.dat", std::ofstream::out | std::ofstream::trunc);
+    output_file.open("./.tmp/numerical_semigroup.dat", std::ofstream::out | std::ofstream::trunc);
 
+    /* write contents */
     output_file << "param n := " << this->generators.size() << ";" << std::endl << "param a :=";
     int i = 1;
     for (auto g: this->generators) {
@@ -323,4 +329,98 @@ void NumericalSemigroup::write_ampl_numerical_semigroup_dat() {
 
     /* close file */
     output_file.close();
+}
+
+void NumericalSemigroup::write_ampl_apery_set_member_mod() {
+
+    /* open file */
+    std::ofstream output_file;
+    output_file.open("./.tmp/apery_set_member.mod", std::ofstream::out | std::ofstream::trunc);
+
+    /* write contents */
+    output_file << "param n;" << std::endl;
+    output_file << "set N := 1..n;" << std::endl;
+    output_file << "param a {N};" << std::endl;
+    output_file << "param s;" << std::endl;
+    output_file << "param i;" << std::endl;
+    output_file << "var X {N} integer, >= 0;" << std::endl;
+    output_file << "var K integer;" << std::endl << std::endl;
+    output_file << "minimize T:" << std::endl << "\tsum {j in N} a[j]*X[j];" << std::endl << std::endl;
+    output_file << "subject to C:" << std::endl << "\tsum {j in N} a[j]*X[j] = i + s*K;" << std::endl;
+
+    /* close file */
+    output_file.close();
+
+}
+
+void NumericalSemigroup::write_ampl_apery_set_member_run(int s, int i) {
+
+    /* open file */
+    std::ofstream output_file;
+    output_file.open("./.tmp/apery_set_member.run", std::ofstream::out | std::ofstream::trunc);
+
+    /* write contents */
+    output_file << "reset;" << std::endl;
+    output_file << "model .tmp/apery_set_member.mod;" << std::endl;
+    output_file << "data .tmp/numerical_semigroup.dat;" << std::endl;
+    output_file << "let s := " << s << ";" << std::endl;
+    output_file << "let i := " << i << ";" << std::endl;
+    output_file << "option solver gurobi;" << std::endl;
+    output_file << "solve;" << std::endl;
+    output_file << "display X;" << std::endl;
+    output_file << "display K;" << std::endl;
+
+    /* close file */
+    output_file.close();
+}
+
+void NumericalSemigroup::write_ampl_apery_set_run(int s) {
+
+    /* open file */
+    std::ofstream output_file;
+    output_file.open("./.tmp/apery_set.run", std::ofstream::out | std::ofstream::trunc);
+
+    /* write contents */
+    output_file << "reset;" << std::endl;
+    output_file << "model .tmp/apery_set_member.mod;" << std::endl;
+    output_file << "data .tmp/numerical_semigroup.dat;" << std::endl;
+    output_file << "let s := " << s <<  ";" << std::endl;
+    output_file << "param apery_set {0..s-1};" << std::endl;
+    output_file << "option solver gurobi;" << std::endl;
+    output_file << "for {l in 0..s-1} {" << std::endl;
+    output_file << "\tlet i := l;" << std::endl;
+    output_file << "\tsolve;" << std::endl;
+    output_file << "\tlet apery_set[l] := T;" << std::endl;
+    output_file << "}" << std::endl;
+    output_file << "display apery_set;" << std::endl;
+
+    /* close file */
+    output_file.close();
+
+}
+
+void NumericalSemigroup::write_ampl_frobenius_number_run() {
+
+    /* open file */
+    std::ofstream output_file;
+    output_file.open("./.tmp/frobenius_number.run", std::ofstream::out | std::ofstream::trunc);
+
+    /* write contents */
+    output_file << "reset;" << std::endl;
+    output_file << "model .tmp/apery_set_member.mod;" << std::endl;
+    output_file << "data .tmp/numerical_semigroup.dat;" << std::endl;
+    output_file << "let s := a[1];" << std::endl;
+    output_file << "option solver gurobi;" << std::endl;
+    output_file << "param m default 0;" << std::endl;
+    output_file << "for {l in 0..s-1} {" << std::endl;
+    output_file << "\tlet i := l;" << std::endl;
+    output_file << "\tsolve;" << std::endl;
+    output_file << "\tif T > m then let m := T;" << std::endl;
+    output_file << "}" << std::endl;
+    output_file << "param f := m - s;" << std::endl;
+    output_file << "display f;" << std::endl;
+
+    /* close file */
+    output_file.close();
+
 }

@@ -32,6 +32,8 @@ int main ( int argc, char *argv[] )
 	std::cout << " https://github.com/jqnoc/numsem/" << std::endl;
 	std::cout << "===========================================================================================" << std::endl;
 
+	system("rm -rf .tmp; mkdir .tmp");
+
 	/* define options */
 	std::vector<std::string> list_of_knowns;
 

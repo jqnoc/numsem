@@ -89,6 +89,14 @@ public:
 
 	void write_ampl_numerical_semigroup_dat();
 
+	void write_ampl_apery_set_member_mod();
+
+	void write_ampl_apery_set_member_run(int s, int i);
+
+	void write_ampl_apery_set_run(int s);
+
+	void write_ampl_frobenius_number_run();
+
 };
 
 #endif
