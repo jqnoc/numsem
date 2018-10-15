@@ -17,8 +17,8 @@ NumericalSemigroup::NumericalSemigroup(std::set<int> generators) {
     this->is_num_sem = false;
     this->write_ampl_numerical_semigroup_dat();
     this->write_ampl_apery_set_member_mod();
-    this->write_ampl_apery_set_member_run(14, 7);
-    this->write_ampl_apery_set_run(30);
+    this->write_ampl_apery_set_member_run(376, 7);
+    this->write_ampl_apery_set_run(376);
     this->write_ampl_frobenius_number_run();
 
     /* check if $gcd(a_1,...,a_n) = 1$ */
@@ -57,6 +57,26 @@ int NumericalSemigroup::frobenius_number() {
         return -1;
     }
     return set_gaps[set_gaps.size() - 1];
+}
+
+int NumericalSemigroup::frobenius_number_ampl() {
+
+    /* write AMPL files */
+    this->write_ampl_apery_set_member_mod();
+    this->write_ampl_numerical_semigroup_dat();
+    this->write_ampl_frobenius_number_run();
+
+    /* solve Frobenius problem with AMPL */
+    system("ampl .tmp/frobenius_number.run");
+
+    /* get solution from file */
+    std::ifstream input_file;
+    input_file.open(".tmp/solution_frobenius.txt");
+    int f;
+    input_file >> f;
+    input_file.close();
+
+    return f;
 }
 
 int NumericalSemigroup::frobenius_number_bound() {
@@ -392,7 +412,8 @@ void NumericalSemigroup::write_ampl_apery_set_run(int s) {
     output_file << "\tsolve;" << std::endl;
     output_file << "\tlet apery_set[l] := T;" << std::endl;
     output_file << "}" << std::endl;
-    output_file << "display apery_set;" << std::endl;
+    //output_file << "display apery_set;" << std::endl;
+    output_file << "printf {l in 0..s-1} '%s %s\\n', l, apery_set[l] > '.tmp/solution_apery_set.txt';" << std::endl;
 
     /* close file */
     output_file.close();
@@ -418,7 +439,8 @@ void NumericalSemigroup::write_ampl_frobenius_number_run() {
     output_file << "\tif T > m then let m := T;" << std::endl;
     output_file << "}" << std::endl;
     output_file << "param f := m - s;" << std::endl;
-    output_file << "display f;" << std::endl;
+    //output_file << "display f;" << std::endl;
+    output_file << "printf '%s\\n', f > '.tmp/solution_frobenius.txt';" << std::endl;
 
     /* close file */
     output_file.close();

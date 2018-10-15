@@ -58,6 +58,9 @@ int main ( int argc, char *argv[] )
 	list_of_knowns.push_back("-m");  // numerical semigroup membership
 	int opt_nsmp;
 
+	list_of_knowns.push_back("-ampl");  // use AMPL
+	bool opt_ampl = false;
+
 	/* parse arguments */
 	try {
 		InputParser input(argc, argv);
@@ -111,13 +114,27 @@ int main ( int argc, char *argv[] )
 			throw "ERROR: unknown options";
         }
 
+		/* AMPL */
+		if (input.cmdOptionExists("-ampl")) {
+            if (not input.getCmdArg("-ampl").empty()) {
+                throw "ERROR: option -ampl cannot take arguments";
+            }
+			opt_ampl = true;
+        }
+
 		/* Frobenius problem */
 		if (input.cmdOptionExists("-f")) {
             if (not input.getCmdArg("-f").empty()) {
                 throw "ERROR: option -f cannot take arguments";
             }
 			opt_frobenius = true;
-			std::cout << "f(S) = " << ns->frobenius_number() << std::endl;
+			std::cout << "f(S) = ";
+			if (opt_ampl) {
+				std::cout << ns->frobenius_number_ampl();
+			} else {
+				std::cout << ns->frobenius_number();
+			}
+			std::cout << std::endl;
         }
 
 		/* set of gaps */

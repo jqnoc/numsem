@@ -37,6 +37,7 @@ public:
 
 	//! @return Calculates the Frobenius number of the numerical semigroup
 	int frobenius_number();
+	int frobenius_number_ampl();
 
 	//! @return Calculates the best lower bound for the Frobenius number from a number of criteria
 	int frobenius_number_bound();
