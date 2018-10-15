@@ -12,9 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Command options for all features (see full list with --help).
 - Generators of numerical semigroup now taken from file.
 
-### Removed
+### Changed
 - Old console options are no longer supported, use new command options.
-- Deleted /ampl/ directory. AMPL files are now generated when needed.
+
+### Removed
+- Deleted /ampl directory. AMPL files are now generated when needed.
 
 ## 0.2.0 (2018.07.25)
 ### Added

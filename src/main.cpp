@@ -25,7 +25,7 @@ int main ( int argc, char *argv[] )
 {
 
 	std::cout << std::endl << "===========================================================================================" << std::endl;
-	std::cout << " NumSem v0.1.0" << std::endl;
+	std::cout << " NumSem v0.3.0 (2018.10.15)" << std::endl;
 	std::cout << " Copyright (C) Joaquín Ossorio-Castillo. All rights reserved." << std::endl;
 	std::cout << " This software is free for non-commercial purposes." << std::endl;
 	std::cout << " Full license information can be found in the LICENSE.txt file." << std::endl;

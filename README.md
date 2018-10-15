@@ -1,4 +1,4 @@
-numsem v0.3.0
+NumSem v0.3.0 (2018.10.15)
 ======
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1256765.svg)](https://doi.org/10.5281/zenodo.1256765)
