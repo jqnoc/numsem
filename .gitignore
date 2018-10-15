@@ -34,3 +34,6 @@ numsem
 # Other
 *.txt
 .tmp
+.run
+.mod
+.dat

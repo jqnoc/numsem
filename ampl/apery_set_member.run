@@ -1,9 +1,0 @@
-reset;
-model apery_set_member.mod;
-data numerical_semigroup.dat;
-let s := 30;
-let i := 5;
-option solver gurobi;
-solve;
-display X;
-display K;
